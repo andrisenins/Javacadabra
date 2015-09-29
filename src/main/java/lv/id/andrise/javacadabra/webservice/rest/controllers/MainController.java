@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -28,13 +29,13 @@ public class MainController {
     }
 
     @RequestMapping(value = "/define/asset/{assetName}", method = RequestMethod.POST)
-    public String defineNewAsset(@PathVariable String assetName,@RequestBody JSONObject jsonObject) {
+    public String defineNewAsset(@PathVariable String assetName,@RequestBody JSONObject jsonObject) throws IOException {
         jsonObjects.assetDefinition(assetName, jsonObject);
         return "success";
     }
 
     @RequestMapping(value = "/create/asset/{assetName}", method = RequestMethod.POST)
-    public String createAsset(@PathVariable String assetName, @RequestBody JSONObject jsonObject) {
+    public String createAsset(@PathVariable String assetName, @RequestBody JSONObject jsonObject) throws IOException {
         jsonObjects.assetCreation(assetName, jsonObject);
         return "success";
     }

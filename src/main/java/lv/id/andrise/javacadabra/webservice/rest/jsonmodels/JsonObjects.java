@@ -1,9 +1,11 @@
 package lv.id.andrise.javacadabra.webservice.rest.jsonmodels;
 
 
+import lv.id.andrise.javacadabra.webservice.rest.util.AssetIdGenerator;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -17,6 +19,9 @@ import java.util.Map;
  */
 @Service
 public class JsonObjects {
+
+    @Autowired
+    private AssetIdGenerator assetIdGenerator;
 
     public List<JSONObject> readJson() {
         File folder = new File("assetdefinitions/");
@@ -55,22 +60,39 @@ public class JsonObjects {
         return jsonObjects;
     }
 
-    public String assetDefinition(String assetName, JSONObject jsonObject) {
-        File file = new File("." + assetName);
-        try {
-            file.createNewFile();
-            FileWriter fileWriter = new FileWriter("." + assetName);
-            fileWriter.write(jsonObject.toJSONString());
-            fileWriter.flush();
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public String assetDefinition(String assetName, JSONObject jsonObject) throws IOException {
+        Long generatedId = assetIdGenerator.generateNewAssetId(assetIdGenerator.ASSET_DEFINITION_ID);
+        jsonObject.put("assetId", generatedId);
+        File file = new File(assetName + "." + "definition");
+        if(!file.exists()) {
+            try {
+                file.createNewFile();
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.write(jsonObject.toJSONString());
+                fileWriter.flush();
+                fileWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return "success";
     }
 
-    public String assetCreation(String assetName, JSONObject jsonObject) {
-
-        return null;
+    public String assetCreation(String assetName, JSONObject jsonObject) throws IOException {
+        Long generatedId = assetIdGenerator.generateNewAssetId(assetIdGenerator.ASSET_ID);
+        jsonObject.put("assetId", generatedId);
+        File file = new File(generatedId + "." + assetName);
+        if(!file.exists()) {
+            try {
+                file.createNewFile();
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.write(jsonObject.toJSONString());
+                fileWriter.flush();
+                fileWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return "success";
     }
 }
