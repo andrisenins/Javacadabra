@@ -20,11 +20,14 @@ import java.util.Map;
 @Service
 public class JsonObjects {
 
+    public static final String ASSET_DEFINITIONS_FOLDER = "assetdefinitions/";
+    public static final String ASSET_REPOSITORY = "repository/";
+
     @Autowired
     private AssetIdGenerator assetIdGenerator;
 
     public List<JSONObject> readJson() {
-        File folder = new File("assetdefinitions/");
+        File folder = new File(ASSET_DEFINITIONS_FOLDER);
         File[] listOfFiles = folder.listFiles();
         JSONParser parser = new JSONParser();
         List<JSONObject> jsonObjects = new ArrayList<>();
@@ -42,7 +45,7 @@ public class JsonObjects {
     }
 
     public Map<String, JSONObject> mapOfJsons() {
-        File folder = new File("assetdefinitions/");
+        File folder = new File(ASSET_DEFINITIONS_FOLDER);
         System.out.println(folder.getAbsolutePath());
         File[] listOfFiles = folder.listFiles();
         JSONParser parser = new JSONParser();
@@ -63,7 +66,7 @@ public class JsonObjects {
     public String assetDefinition(String assetName, JSONObject jsonObject) throws IOException {
         Long generatedId = assetIdGenerator.generateNewAssetId(assetIdGenerator.ASSET_DEFINITION_ID);
         jsonObject.put("assetId", generatedId);
-        File file = new File(assetName + "." + "definition");
+        File file = new File(ASSET_DEFINITIONS_FOLDER + assetName + "." + "definition");
         if(!file.exists()) {
             try {
                 file.createNewFile();
@@ -81,7 +84,7 @@ public class JsonObjects {
     public String assetCreation(String assetName, JSONObject jsonObject) throws IOException {
         Long generatedId = assetIdGenerator.generateNewAssetId(assetIdGenerator.ASSET_ID);
         jsonObject.put("assetId", generatedId);
-        File file = new File(generatedId + "." + assetName);
+        File file = new File(ASSET_REPOSITORY + generatedId + "." + assetName);
         if(!file.exists()) {
             try {
                 file.createNewFile();
@@ -94,5 +97,8 @@ public class JsonObjects {
             }
         }
         return "success";
+    }
+    public JSONObject getAsset(Long assetId) {
+        return null;
     }
 }

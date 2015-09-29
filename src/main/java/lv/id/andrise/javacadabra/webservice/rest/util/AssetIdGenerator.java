@@ -18,6 +18,7 @@ public class AssetIdGenerator {
     public static final String ASSET_ID = "assetId";
     public static final String ASSET_DEFINITION_ID = "assetDefinitionId";
     public static final String SEQUENCE_TXT = "sequence.txt";
+    public static final String CONFIG_FOLDER = "config/";
 
     public Long generateNewAssetId(String assetType) throws IOException {
         Long generatedId = getLastCreatedAssetId(assetType) + 1L;
@@ -32,7 +33,7 @@ public class AssetIdGenerator {
 
     public Long getLastCreatedAssetId(String assetType) throws IOException {
         Long maxValue = null;
-        File file = new File(assetType + SEQUENCE_TXT);
+        File file = new File(CONFIG_FOLDER + assetType + SEQUENCE_TXT);
         if (!file.exists() && assetType.equals(ASSET_ID)) {
                 saveAssetIdToList(assetType, ASSET_ID_BEGINNING);
             return ASSET_ID_BEGINNING;
@@ -53,7 +54,7 @@ public class AssetIdGenerator {
     }
 
     public void saveAssetIdToList(String assetType, Long id) throws IOException {
-        File file = new File(assetType + SEQUENCE_TXT);
+        File file = new File(CONFIG_FOLDER + assetType + SEQUENCE_TXT);
         if (!file.exists()) {
             file.createNewFile();
         }
