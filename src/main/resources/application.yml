@@ -1,19 +1,8 @@
-log4j:
-  rootCategory: INFO, CONSOLE
-
-# CONSOLE is set to be a ConsoleAppender using a PatternLayout.
-  appender:
-    CONSOLE: org.apache.log4j.ConsoleAppender
-      layout: org.apache.log4j.PatternLayout
-        ConversionPattern: ${LOG_PATTERN}
-
 # ------ LOGGING SETTINGS ------ #
 #-- logging levels controlled by logging.level and then appending the package name to it. LEVELS available: DEBUG, INFO, TRACE, ERROR, FATAL
 logging:
   level:
-    org:
-      hibernate: ERROR
-    demo: DEBUG
+    lv.id.andrise.javacabra: DEBUG
 #-- the below line directs logging to a specific file
   file: logs/server.log
 
