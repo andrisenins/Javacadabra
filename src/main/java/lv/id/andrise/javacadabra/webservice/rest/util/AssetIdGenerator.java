@@ -22,7 +22,7 @@ public class AssetIdGenerator {
 
     public Long generateNewAssetId(String assetType) throws IOException {
         Long generatedId = getLastCreatedAssetId(assetType) + 1L;
-        saveAssetIdToList(assetType, generatedId);
+//        saveAssetIdToList(assetType, generatedId);
         return generatedId;
     }
 

@@ -2,6 +2,7 @@ package lv.id.andrise.javacadabra.webservice.rest.controllers;
 
 import lv.id.andrise.javacadabra.webservice.rest.jsonmodels.JsonObjects;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,16 @@ public class MainController {
         return jsonObjects.mapOfJsons();
     }
 
+    @RequestMapping(value = "/assets/jsonmap", method = RequestMethod.GET)
+    public Map<String, JSONObject> assetsMap() {
+        return jsonObjects.mapOfAssets();
+    }
+
+    @RequestMapping(value = "/get/asset/{assetName}", method = RequestMethod.GET)
+    public JSONObject assetsMap(@PathVariable String assetName) throws IOException, ParseException {
+        return jsonObjects.getAssetDefinition(assetName);
+    }
+
     @RequestMapping(value = "/define/asset/{assetName}", method = RequestMethod.POST)
     public String defineNewAsset(@PathVariable String assetName,@RequestBody JSONObject jsonObject) throws IOException {
         jsonObjects.assetDefinition(assetName, jsonObject);
@@ -36,8 +47,13 @@ public class MainController {
 
     @RequestMapping(value = "/create/asset/{assetName}", method = RequestMethod.POST)
     public String createAsset(@PathVariable String assetName, @RequestBody JSONObject jsonObject) throws IOException {
-        jsonObjects.assetCreation(assetName, jsonObject);
-        return "success";
+
+        return jsonObjects.assetCreation(assetName, jsonObject);
+    }
+
+    @RequestMapping(value = "/get/asset/byid/{id}", method = RequestMethod.GET)
+    public JSONObject getAssetById(@PathVariable Long id) throws IOException, ParseException {
+        return jsonObjects.getAsset(id);
     }
 
 }

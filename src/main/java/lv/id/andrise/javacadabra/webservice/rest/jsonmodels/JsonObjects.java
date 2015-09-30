@@ -63,11 +63,26 @@ public class JsonObjects {
         return jsonObjects;
     }
 
+    public JSONObject getAssetDefinition(String assetName) throws IOException, ParseException {
+        File assetFile = new File(ASSET_DEFINITIONS_FOLDER + assetName + ".definition");
+        JSONParser parser = new JSONParser();
+        Object obj;
+        JSONObject jsonObject;
+        obj = parser.parse(new FileReader(assetFile));
+        jsonObject = (JSONObject) obj;
+
+
+        return jsonObject;
+    }
+
     public String assetDefinition(String assetName, JSONObject jsonObject) throws IOException {
+
         Long generatedId = assetIdGenerator.generateNewAssetId(assetIdGenerator.ASSET_DEFINITION_ID);
         jsonObject.put("assetId", generatedId);
+        assetIdGenerator.saveAssetIdToList(assetIdGenerator.ASSET_DEFINITION_ID, generatedId);
+
         File file = new File(ASSET_DEFINITIONS_FOLDER + assetName + "." + "definition");
-        if(!file.exists()) {
+        if (!file.exists()) {
             try {
                 file.createNewFile();
                 FileWriter fileWriter = new FileWriter(file);
@@ -84,8 +99,25 @@ public class JsonObjects {
     public String assetCreation(String assetName, JSONObject jsonObject) throws IOException {
         Long generatedId = assetIdGenerator.generateNewAssetId(assetIdGenerator.ASSET_ID);
         jsonObject.put("assetId", generatedId);
+        try {
+            JSONObject assetDefinition = getAssetDefinition(assetName);
+            for (Object o : assetDefinition.keySet()) {
+                System.out.println("Asset definition keyset key: " + o.toString());
+                System.out.println("Newly created article value for key: " + jsonObject.get(o));
+                if (jsonObject.get(o).toString().isEmpty()) {
+                    return "Required asset value was empty";
+                }
+            }
+        } catch (FileNotFoundException e) {
+            return "Asset doesn't exist";
+        } catch (NullPointerException e) {
+            return "Required asset value was null";
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        assetIdGenerator.saveAssetIdToList(assetIdGenerator.ASSET_ID, generatedId);
         File file = new File(ASSET_REPOSITORY + generatedId + "." + assetName);
-        if(!file.exists()) {
+        if (!file.exists()) {
             try {
                 file.createNewFile();
                 FileWriter fileWriter = new FileWriter(file);
@@ -98,7 +130,63 @@ public class JsonObjects {
         }
         return "success";
     }
-    public JSONObject getAsset(Long assetId) {
+
+    public JSONObject getAsset(Long assetId) throws IOException, ParseException {
+
+        if(assetId >= assetIdGenerator.ASSET_ID_BEGINNING) {
+            List<JSONObject> assetList = listOfAssets();
+            for (JSONObject asset : assetList) {
+                if(asset.containsValue(assetId)) {
+                    return asset;
+                }
+            }
+
+        }
+        if(assetId < assetIdGenerator.ASSET_ID_BEGINNING) {
+            for (JSONObject assetDefinition : readJson()) {
+                if(assetDefinition.containsValue(assetId)) {
+                    return assetDefinition;
+                }
+            }
+        }
         return null;
     }
+
+    public Map<String, JSONObject> mapOfAssets() {
+        File folder = new File(ASSET_REPOSITORY);
+        File[] listOfFiles = folder.listFiles();
+        JSONParser parser = new JSONParser();
+        Map<String, JSONObject> jsonObjects = new HashMap<>();
+        Object obj;
+        for (File listOfFile : listOfFiles) {
+            try {
+                obj = parser.parse(new FileReader(listOfFile));
+                JSONObject jsonObject = (JSONObject) obj;
+                jsonObjects.put(listOfFile.getName(), jsonObject);
+            } catch (IOException | ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return jsonObjects;
+    }
+
+    public List<JSONObject> listOfAssets() {
+        File folder = new File(ASSET_REPOSITORY);
+        File[] listOfFiles = folder.listFiles();
+        JSONParser parser = new JSONParser();
+        List<JSONObject> jsonObjects = new ArrayList<>();
+        Object obj;
+        for (File listOfFile : listOfFiles) {
+            try {
+                obj = parser.parse(new FileReader(listOfFile));
+                JSONObject jsonObject = (JSONObject) obj;
+                jsonObjects.add(jsonObject);
+            } catch (IOException | ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return jsonObjects;
+    }
+
+
 }
