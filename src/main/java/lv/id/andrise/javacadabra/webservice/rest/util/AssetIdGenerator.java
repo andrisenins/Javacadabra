@@ -24,16 +24,11 @@ public class AssetIdGenerator {
         return getLastCreatedAssetId(assetType) + 1L;
     }
 
-    public List<Long> getAllAssetIds() {
-
-        return null;
-    }
-
     public Long getLastCreatedAssetId(String assetType) throws IOException {
         Long maxValue = null;
         File file = new File(CONFIG_FOLDER + assetType + SEQUENCE_TXT);
         if (!file.exists() && assetType.equals(ASSET_ID)) {
-                saveAssetIdToList(assetType, ASSET_ID_BEGINNING);
+            saveAssetIdToList(assetType, ASSET_ID_BEGINNING);
             return ASSET_ID_BEGINNING;
         }
         else if(!file.exists() && assetType.equals(ASSET_DEFINITION_ID)){

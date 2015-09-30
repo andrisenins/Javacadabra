@@ -16,3 +16,6 @@ public class JavacadabraApplication {
         SpringApplication.run(JavacadabraApplication.class, args);
     }
 }
+//TODO 1: Add Junit tests
+//TODO 2: Add Integration tests
+//TODO 3: Split MainController into logical parts

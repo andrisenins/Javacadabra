@@ -18,7 +18,7 @@ import java.util.Map;
  * Created by andris on 15.22.9.
  */
 @Service
-public class JsonObjects {
+public class AssetService {
 
     public static final String ASSET_DEFINITIONS_FOLDER = "assetdefinitions/";
     public static final String ASSET_REPOSITORY = "repository/";
@@ -26,7 +26,14 @@ public class JsonObjects {
     @Autowired
     private AssetIdGenerator assetIdGenerator;
 
-    public List<JSONObject> readJson() {
+    public JSONObject getAssetDefinition(String assetName) throws IOException, ParseException {
+        File assetFile = new File(ASSET_DEFINITIONS_FOLDER + assetName + ".definition");
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader(assetFile));
+        return (JSONObject) obj;
+    }
+
+    public List<JSONObject> getAssetDefinitionsList() {
         File folder = new File(ASSET_DEFINITIONS_FOLDER);
         File[] listOfFiles = folder.listFiles();
         JSONParser parser = new JSONParser();
@@ -44,7 +51,7 @@ public class JsonObjects {
         return jsonObjects;
     }
 
-    public Map<String, JSONObject> mapOfJsons() {
+    public Map<String, JSONObject> getAssetDefinitionsMap() {
         File folder = new File(ASSET_DEFINITIONS_FOLDER);
         System.out.println(folder.getAbsolutePath());
         File[] listOfFiles = folder.listFiles();
@@ -63,76 +70,7 @@ public class JsonObjects {
         return jsonObjects;
     }
 
-    public JSONObject getAssetDefinition(String assetName) throws IOException, ParseException {
-        File assetFile = new File(ASSET_DEFINITIONS_FOLDER + assetName + ".definition");
-        JSONParser parser = new JSONParser();
-        Object obj;
-        JSONObject jsonObject;
-        obj = parser.parse(new FileReader(assetFile));
-        jsonObject = (JSONObject) obj;
 
-
-        return jsonObject;
-    }
-
-    @SuppressWarnings("unchecked")
-    public String assetDefinition(String assetName, JSONObject jsonObject) throws IOException {
-
-        @SuppressWarnings("AccessStaticViaInstance")
-        Long generatedId = assetIdGenerator.generateNewAssetId(AssetIdGenerator.ASSET_DEFINITION_ID);
-        jsonObject.put("assetId", generatedId);
-        assetIdGenerator.saveAssetIdToList(AssetIdGenerator.ASSET_DEFINITION_ID, generatedId);
-
-        File file = new File(ASSET_DEFINITIONS_FOLDER + assetName + "." + "definition");
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-                FileWriter fileWriter = new FileWriter(file);
-                fileWriter.write(jsonObject.toJSONString());
-                fileWriter.flush();
-                fileWriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return "success";
-    }
-
-    @SuppressWarnings("unchecked")
-    public String assetCreation(String assetName, JSONObject jsonObject) throws IOException {
-        Long generatedId = assetIdGenerator.generateNewAssetId(AssetIdGenerator.ASSET_ID);
-        jsonObject.put("assetId", generatedId);
-        try {
-            JSONObject assetDefinition = getAssetDefinition(assetName);
-            for (Object o : assetDefinition.keySet()) {
-                System.out.println("Asset definition keyset key: " + o.toString());
-                System.out.println("Newly created article value for key: " + jsonObject.get(o));
-                if (jsonObject.get(o).toString().isEmpty()) {
-                    return "Required asset value was empty";
-                }
-            }
-        } catch (FileNotFoundException e) {
-            return "Asset doesn't exist";
-        } catch (NullPointerException e) {
-            return "Required asset value was null";
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        assetIdGenerator.saveAssetIdToList(AssetIdGenerator.ASSET_ID, generatedId);
-        File file = new File(ASSET_REPOSITORY + generatedId + "." + assetName);
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-                FileWriter fileWriter = new FileWriter(file);
-                fileWriter.write(jsonObject.toJSONString());
-                fileWriter.flush();
-                fileWriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return "success";
-    }
 
     public JSONObject getAsset(Long assetId) {
 
@@ -146,7 +84,7 @@ public class JsonObjects {
 
         }
         if(assetId < AssetIdGenerator.ASSET_ID_BEGINNING) {
-            for (JSONObject assetDefinition : readJson()) {
+            for (JSONObject assetDefinition : getAssetDefinitionsList()) {
                 if(assetDefinition.containsValue(assetId)) {
                     return assetDefinition;
                 }
@@ -192,4 +130,64 @@ public class JsonObjects {
     }
 
 
+    @SuppressWarnings("unchecked")
+    public String createAssetDefinition(String assetName, JSONObject jsonObject) throws IOException {
+
+        @SuppressWarnings("AccessStaticViaInstance")
+        Long generatedId = assetIdGenerator.generateNewAssetId(AssetIdGenerator.ASSET_DEFINITION_ID);
+        jsonObject.put("assetId", generatedId);
+        assetIdGenerator.saveAssetIdToList(AssetIdGenerator.ASSET_DEFINITION_ID, generatedId);
+
+        File file = new File(ASSET_DEFINITIONS_FOLDER + assetName + "." + "definition");
+        if (!file.exists()) {
+            try {
+                if(file.createNewFile()) {
+                    FileWriter fileWriter = new FileWriter(file);
+                    fileWriter.write(jsonObject.toJSONString());
+                    fileWriter.flush();
+                    fileWriter.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return "success";
+    }
+
+    @SuppressWarnings("unchecked")
+    public String assetCreation(String assetName, JSONObject jsonObject) throws IOException {
+        Long generatedId = assetIdGenerator.generateNewAssetId(AssetIdGenerator.ASSET_ID);
+        jsonObject.put("assetId", generatedId);
+        try {
+            JSONObject assetDefinition = getAssetDefinition(assetName);
+            for (Object o : assetDefinition.keySet()) {
+                System.out.println("Asset definition keyset key: " + o.toString());
+                System.out.println("Newly created article value for key: " + jsonObject.get(o));
+                if (jsonObject.get(o).toString().isEmpty()) {
+                    return "Required asset value was empty";
+                }
+            }
+        } catch (FileNotFoundException e) {
+            return "Asset doesn't exist";
+        } catch (NullPointerException e) {
+            return "Required asset value was null";
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        assetIdGenerator.saveAssetIdToList(AssetIdGenerator.ASSET_ID, generatedId);
+        File file = new File(ASSET_REPOSITORY + generatedId + "." + assetName);
+        if (!file.exists()) {
+            try {
+                if(file.createNewFile()) {
+                    FileWriter fileWriter = new FileWriter(file);
+                    fileWriter.write(jsonObject.toJSONString());
+                    fileWriter.flush();
+                    fileWriter.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return "success";
+    }
 }
