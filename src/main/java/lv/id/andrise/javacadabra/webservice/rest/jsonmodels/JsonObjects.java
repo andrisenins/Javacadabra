@@ -32,7 +32,7 @@ public class JsonObjects {
         JSONParser parser = new JSONParser();
         List<JSONObject> jsonObjects = new ArrayList<>();
         Object obj;
-        for (File listOfFile : listOfFiles) {
+        for (File listOfFile : listOfFiles != null ? listOfFiles : new File[0]) {
             try {
                 obj = parser.parse(new FileReader(listOfFile.getName()));
                 JSONObject jsonObject = (JSONObject) obj;
@@ -51,7 +51,7 @@ public class JsonObjects {
         JSONParser parser = new JSONParser();
         Map<String, JSONObject> jsonObjects = new HashMap<>();
         Object obj;
-        for (File listOfFile : listOfFiles) {
+        for (File listOfFile : listOfFiles != null ? listOfFiles : new File[0]) {
             try {
                 obj = parser.parse(new FileReader(listOfFile.getName()));
                 JSONObject jsonObject = (JSONObject) obj;
@@ -75,11 +75,13 @@ public class JsonObjects {
         return jsonObject;
     }
 
+    @SuppressWarnings("unchecked")
     public String assetDefinition(String assetName, JSONObject jsonObject) throws IOException {
 
-        Long generatedId = assetIdGenerator.generateNewAssetId(assetIdGenerator.ASSET_DEFINITION_ID);
+        @SuppressWarnings("AccessStaticViaInstance")
+        Long generatedId = assetIdGenerator.generateNewAssetId(AssetIdGenerator.ASSET_DEFINITION_ID);
         jsonObject.put("assetId", generatedId);
-        assetIdGenerator.saveAssetIdToList(assetIdGenerator.ASSET_DEFINITION_ID, generatedId);
+        assetIdGenerator.saveAssetIdToList(AssetIdGenerator.ASSET_DEFINITION_ID, generatedId);
 
         File file = new File(ASSET_DEFINITIONS_FOLDER + assetName + "." + "definition");
         if (!file.exists()) {
@@ -96,8 +98,9 @@ public class JsonObjects {
         return "success";
     }
 
+    @SuppressWarnings("unchecked")
     public String assetCreation(String assetName, JSONObject jsonObject) throws IOException {
-        Long generatedId = assetIdGenerator.generateNewAssetId(assetIdGenerator.ASSET_ID);
+        Long generatedId = assetIdGenerator.generateNewAssetId(AssetIdGenerator.ASSET_ID);
         jsonObject.put("assetId", generatedId);
         try {
             JSONObject assetDefinition = getAssetDefinition(assetName);
@@ -115,7 +118,7 @@ public class JsonObjects {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        assetIdGenerator.saveAssetIdToList(assetIdGenerator.ASSET_ID, generatedId);
+        assetIdGenerator.saveAssetIdToList(AssetIdGenerator.ASSET_ID, generatedId);
         File file = new File(ASSET_REPOSITORY + generatedId + "." + assetName);
         if (!file.exists()) {
             try {
@@ -131,9 +134,9 @@ public class JsonObjects {
         return "success";
     }
 
-    public JSONObject getAsset(Long assetId) throws IOException, ParseException {
+    public JSONObject getAsset(Long assetId) {
 
-        if(assetId >= assetIdGenerator.ASSET_ID_BEGINNING) {
+        if(assetId >= AssetIdGenerator.ASSET_ID_BEGINNING) {
             List<JSONObject> assetList = listOfAssets();
             for (JSONObject asset : assetList) {
                 if(asset.containsValue(assetId)) {
@@ -142,7 +145,7 @@ public class JsonObjects {
             }
 
         }
-        if(assetId < assetIdGenerator.ASSET_ID_BEGINNING) {
+        if(assetId < AssetIdGenerator.ASSET_ID_BEGINNING) {
             for (JSONObject assetDefinition : readJson()) {
                 if(assetDefinition.containsValue(assetId)) {
                     return assetDefinition;
@@ -158,7 +161,7 @@ public class JsonObjects {
         JSONParser parser = new JSONParser();
         Map<String, JSONObject> jsonObjects = new HashMap<>();
         Object obj;
-        for (File listOfFile : listOfFiles) {
+        for (File listOfFile : listOfFiles != null ? listOfFiles : new File[0]) {
             try {
                 obj = parser.parse(new FileReader(listOfFile));
                 JSONObject jsonObject = (JSONObject) obj;
@@ -176,7 +179,7 @@ public class JsonObjects {
         JSONParser parser = new JSONParser();
         List<JSONObject> jsonObjects = new ArrayList<>();
         Object obj;
-        for (File listOfFile : listOfFiles) {
+        for (File listOfFile : listOfFiles != null ? listOfFiles : new File[0]) {
             try {
                 obj = parser.parse(new FileReader(listOfFile));
                 JSONObject jsonObject = (JSONObject) obj;

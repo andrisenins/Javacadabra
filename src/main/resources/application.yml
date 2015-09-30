@@ -1,19 +1,24 @@
-log4j.rootCategory=INFO, CONSOLE
+log4j:
+  rootCategory: INFO, CONSOLE
 
 # CONSOLE is set to be a ConsoleAppender using a PatternLayout.
-log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender
-log4j.appender.CONSOLE.layout=org.apache.log4j.PatternLayout
-log4j.appender.CONSOLE.layout.ConversionPattern=${LOG_PATTERN}
+  appender:
+    CONSOLE: org.apache.log4j.ConsoleAppender
+      layout: org.apache.log4j.PatternLayout
+        ConversionPattern: ${LOG_PATTERN}
 
 # ------ LOGGING SETTINGS ------ #
 #-- logging levels controlled by logging.level and then appending the package name to it. LEVELS available: DEBUG, INFO, TRACE, ERROR, FATAL
-logging.level.org.hibernate=ERROR
-logging.level.demo=DEBUG
+logging:
+  level:
+    org:
+      hibernate: ERROR
+    demo: DEBUG
 #-- the below line directs logging to a specific file
-logging.file=logs/server.log
+  file: logs/server.log
 
 # ------ SERVER SETTINGS ------ #
-server.port:8080
+server.port: 8080
 
 
 # ------ SECURITY SETTINGS -----#

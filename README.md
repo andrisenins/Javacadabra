@@ -1,2 +1,3 @@
 # Javacadabra
-Java base CMS, potentially will use spring + hibernate as backend and serve to angularjs frontend (that will be included) or json output, or probably pdf.
+Content Management System based on files not DB.
+Backend will be written in Java, using Spring Boot. Frontend potentially will be written with Angularjs.

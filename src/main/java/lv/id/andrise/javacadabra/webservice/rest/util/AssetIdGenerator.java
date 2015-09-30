@@ -21,9 +21,7 @@ public class AssetIdGenerator {
     public static final String CONFIG_FOLDER = "config/";
 
     public Long generateNewAssetId(String assetType) throws IOException {
-        Long generatedId = getLastCreatedAssetId(assetType) + 1L;
-//        saveAssetIdToList(assetType, generatedId);
-        return generatedId;
+        return getLastCreatedAssetId(assetType) + 1L;
     }
 
     public List<Long> getAllAssetIds() {
