@@ -13,8 +13,8 @@ import java.util.List;
 @Service
 public class AssetIdGenerator {
 
-    public static final long ASSET_ID_BEGINNING = 100_000_000_000_000L;
-    public static final long ASSET_DEFINITION_ID_BEGINNING = 0L;
+    public static final Long ASSET_ID_BEGINNING = 100_000_000_000_000L;
+    public static final Long ASSET_DEFINITION_ID_BEGINNING = 0L;
     public static final String ASSET_ID = "assetId";
     public static final String ASSET_DEFINITION_ID = "assetDefinitionId";
     public static final String SEQUENCE_TXT = "sequence.txt";
@@ -24,7 +24,7 @@ public class AssetIdGenerator {
         return getLastCreatedAssetId(assetType) + 1L;
     }
 
-    public Long getLastCreatedAssetId(String assetType) throws IOException {
+    private Long getLastCreatedAssetId(String assetType) throws IOException {
         Long maxValue = null;
         File file = new File(CONFIG_FOLDER + assetType + SEQUENCE_TXT);
         if (!file.exists() && assetType.equals(ASSET_ID)) {
