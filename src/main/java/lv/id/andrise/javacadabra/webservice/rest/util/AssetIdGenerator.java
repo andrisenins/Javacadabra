@@ -41,7 +41,6 @@ public class AssetIdGenerator {
             List<Long> assetIds = new ArrayList<>();
             br.lines().forEach(s -> assetIds.add(Long.valueOf(s)));
             maxValue = Collections.max(assetIds);
-            System.out.println("Max id: " + maxValue);
         }
         return maxValue;
     }
