@@ -3,6 +3,7 @@ package lv.id.andrise.javacadabra.webservice.user;
 import org.joda.time.DateTime;
 
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -32,6 +33,9 @@ public class User {
         this.salt = salt;
         this.createDate = createDate;
         this.lastAccessDate = lastAccessDate;
+    }
+
+    public User() {
     }
 
     public Long getId() {
@@ -94,6 +98,11 @@ public class User {
         Random random = new SecureRandom();
         byte[] salt = new byte[32];
         random.nextBytes(salt);
-        return salt.toString();
+        return Arrays.toString(salt);
+    }
+
+    public String toCsv() {
+        String separator = ";";
+        return getId() + separator + getUserName() + separator + getUserRole() + separator + getUserPassword() + separator + getSalt() + separator + getCreateDate() +separator + getLastAccessDate() + "\n";
     }
 }

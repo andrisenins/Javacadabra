@@ -24,6 +24,6 @@ public class UserController {
         if(userService.createNewUser(user)) {
             return new ResponseEntity("Success", HttpStatus.CREATED);
         }
-        return new ResponseEntity<String>(HttpStatus.I_AM_A_TEAPOT.toString(), HttpStatus.I_AM_A_TEAPOT);
+        return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT.toString(), HttpStatus.I_AM_A_TEAPOT);
     }
 }
